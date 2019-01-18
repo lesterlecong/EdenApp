@@ -1,8 +1,15 @@
 package com.example.edenmap;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.graphics.Color;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,6 +22,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -27,10 +36,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final LatLng EDENCHAPEL = new LatLng(7.032927, 125.398365);
     private static final LatLng EDENPOOL = new LatLng(7.031371, 125.395713);
     private static final LatLng EDENBUTTERFLY = new LatLng(7.031474, 125.396214);
-    private static final LatLng EDENHERBGARDEN = new LatLng(7.025657, 125.406124);
 
+    private static final LatLng EDENHERBGARDEN = new LatLng(7.025600, 125.406347);
+    private static final LatLng EDENLOLASGARDEN = new LatLng(7.025649, 125.406002);
+    private static final LatLng EDENVISTARESTAURANT = new LatLng(7.030130, 125.398333);
+    
     private LatLngBounds edenNatureParkBound = new LatLngBounds(
-            new LatLng(EDENNATUREPARKCENTER.latitude - 0.003, EDENNATUREPARKCENTER.longitude - 0.003),
+            new LatLng(EDENNATUREPARKCENTER.latitude - 0.009, EDENNATUREPARKCENTER.longitude - 0.009),
             new LatLng(EDENNATUREPARKCENTER.latitude + 0.009, EDENNATUREPARKCENTER.longitude + 0.009));
 
     private GoogleMap mMap;
@@ -42,6 +54,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mEdenPoolMarker;
     private Marker mEdenButterflyMarker;
     private Marker mEdenHerbsGardenMarker;
+    private Marker mEdenLolasGardenMarker;
+    private Marker mEdenVistaRestaurantMarker;
+
+    private Polyline line;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +69,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        android.util.Log.i("INFO","onMapReady");
 
         mMap = googleMap;
 
         addMarkersToMap();
+        addLine();
 
         try {
             boolean success = googleMap.setMapStyle(
@@ -106,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mEdenFishingVillageMarker = mMap.addMarker(new MarkerOptions()
                 .position(EDENFISHINGVILL)
                 .title("Fishing Village")
+                .snippet("Daily:\t8:00 AM - 5:00 PM")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.fish_icon_round)));
 
         mEdenChapelMarker = mMap.addMarker(new MarkerOptions()
@@ -116,6 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mEdenPoolMarker = mMap.addMarker(new MarkerOptions()
                 .position(EDENPOOL)
                 .title("Swimming Pool")
+                .snippet("Sun-Fri:\t8:00 AM - 4:00 PM\nSat:\t\t\t\t8:00 AM - 5:00 PM")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.pool_icon_round)));
 
         mEdenButterflyMarker = mMap.addMarker(new MarkerOptions()
@@ -127,5 +138,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .position(EDENHERBGARDEN)
                 .title("Herb Garden")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.herbs_icon_round)));
+
+        mEdenLolasGardenMarker = mMap.addMarker(new MarkerOptions()
+                .position(EDENLOLASGARDEN)
+                .title("Lolas Garden")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.garden_icon_round)));
+
+        mEdenVistaRestaurantMarker = mMap.addMarker(new MarkerOptions()
+                .position(EDENVISTARESTAURANT)
+                .title("Vista Restaurant")
+                .snippet("Breakfast:\t\t6:30 AM - 9:00 AM\nLunch:\t\t\t\t11:30 AM - 2:00 PM\nDinner:\t\t\t\t\t6:00 PM - 8:30 PM")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.food_icon_round)));
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public android.view.View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public android.view.View getInfoContents(Marker marker) {
+                Context context = getApplicationContext();
+                LinearLayout info = new LinearLayout(context);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(context);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(context);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
     }
+
+    private void addLine(){
+        line = mMap.addPolyline(new PolylineOptions()
+            .add(EDENCHAPEL, EDENBUTTERFLY, EDENENTRANCE)
+            .width(5)
+            .color(Color.BLUE)
+            );
+    }
+
+
+
 }
