@@ -27,6 +27,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final LatLng EDENCHAPEL = new LatLng(7.032927, 125.398365);
     private static final LatLng EDENPOOL = new LatLng(7.031371, 125.395713);
     private static final LatLng EDENBUTTERFLY = new LatLng(7.031474, 125.396214);
+    private static final LatLng EDENHERBGARDEN = new LatLng(7.025602, 124.406339);
 
     private LatLngBounds edenNatureParkBound = new LatLngBounds(
             new LatLng(EDENNATUREPARKCENTER.latitude - 0.003, EDENNATUREPARKCENTER.longitude - 0.003),
@@ -40,7 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mEdenChapelMarker;
     private Marker mEdenPoolMarker;
     private Marker mEdenButterflyMarker;
-
+    private Marker mEdenHerbsGardenMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,5 +122,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .position(EDENBUTTERFLY)
                 .title("Butterfly Garden")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.butterfly_icon_round)));
+
+        mEdenHerbsGardenMarker = mMap.addMarker(new MarkerOptions()
+                .position(EDENHERBGARDEN)
+                .title("Herb Garden")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.herbs_icon_round)));
     }
 }
