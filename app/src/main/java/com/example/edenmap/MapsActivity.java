@@ -28,10 +28,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final LatLng EDENPOOL = new LatLng(7.031371, 125.395713);
     private static final LatLng EDENBUTTERFLY = new LatLng(7.031474, 125.396214);
     private static final LatLng EDENHERBGARDEN = new LatLng(7.025600, 125.406347);
+    private static final LatLng EDENLOLASGARDEN = new LatLng(7.025649, 125.406002);
 
     private LatLngBounds edenNatureParkBound = new LatLngBounds(
-            new LatLng(EDENNATUREPARKCENTER.latitude - 0.003, EDENNATUREPARKCENTER.longitude - 0.003),
-            new LatLng(EDENNATUREPARKCENTER.latitude + 0.005, EDENNATUREPARKCENTER.longitude + 0.005));
+            new LatLng(EDENNATUREPARKCENTER.latitude - 0.009, EDENNATUREPARKCENTER.longitude - 0.009),
+            new LatLng(EDENNATUREPARKCENTER.latitude + 0.009, EDENNATUREPARKCENTER.longitude + 0.009));
 
     private GoogleMap mMap;
 
@@ -42,6 +43,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mEdenPoolMarker;
     private Marker mEdenButterflyMarker;
     private Marker mEdenHerbsGardenMarker;
+    private Marker mEdenLolasGardenMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +55,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        android.util.Log.i("INFO","onMapReady");
 
         mMap = googleMap;
 
@@ -127,5 +121,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .position(EDENHERBGARDEN)
                 .title("Herb Garden")
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.herbs_icon_round)));
+
+        mEdenLolasGardenMarker = mMap.addMarker(new MarkerOptions()
+                .position(EDENLOLASGARDEN)
+                .title("Lolas Garden")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.garden_icon_round)));
     }
 }
