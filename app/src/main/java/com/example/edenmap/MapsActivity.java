@@ -17,13 +17,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -36,11 +43,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final LatLng EDENCHAPEL = new LatLng(7.032927, 125.398365);
     private static final LatLng EDENPOOL = new LatLng(7.031371, 125.395713);
     private static final LatLng EDENBUTTERFLY = new LatLng(7.031474, 125.396214);
-
     private static final LatLng EDENHERBGARDEN = new LatLng(7.025600, 125.406347);
     private static final LatLng EDENLOLASGARDEN = new LatLng(7.025649, 125.406002);
     private static final LatLng EDENVISTARESTAURANT = new LatLng(7.030130, 125.398333);
-    
+
+    private static final LatLng EDENILOVEEDEN = new LatLng(7.030200, 125.397560);
+
+    private static final LatLng EDENFRONTOFFICE = new LatLng(7.029683, 125.400436);
+    private static final LatLng EDENFRCLINIC = new LatLng(7.029688, 125.400521);
+    private static final LatLng EDENCYPRESSHALL = new LatLng(7.029412, 125.400567);
+
+    //Rooms
+    private static final LatLng EDENBEGONIAROOMS = new LatLng(7.029612, 125.400667);
+    private static final LatLng EDENVISTACOTTAGES = new LatLng(7.029086, 125.399105);
+    private static final LatLng EDENCAMELLAROOMS = new LatLng(7.030013, 125.397181);
+
+    private static final int PATTERNDASHLENGTHPIXEL = 20;
+    private static final int PATTERNGAPLENGTHPIXEL = 20;
+    private static final PatternItem DOT = new Dot();
+    private static final PatternItem DASH = new Dash(PATTERNDASHLENGTHPIXEL);
+    private static final PatternItem GAP = new Gap(PATTERNGAPLENGTHPIXEL);
+    private static final List<PatternItem> PATTERNPOLYGONALPHA = Arrays.asList(GAP, DASH);
+
     private LatLngBounds edenNatureParkBound = new LatLngBounds(
             new LatLng(EDENNATUREPARKCENTER.latitude - 0.009, EDENNATUREPARKCENTER.longitude - 0.009),
             new LatLng(EDENNATUREPARKCENTER.latitude + 0.009, EDENNATUREPARKCENTER.longitude + 0.009));
@@ -77,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         addMarkersToMap();
-        addLine();
+        drawMountainTrail();
 
         try {
             boolean success = googleMap.setMapStyle(
@@ -180,12 +204,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addLine(){
+    private void drawMountainTrail(){
         line = mMap.addPolyline(new PolylineOptions()
             .add(EDENCHAPEL, EDENBUTTERFLY, EDENENTRANCE)
             .width(5)
             .color(Color.BLUE)
+            .pattern(PATTERNPOLYGONALPHA)
             );
+        line.setVisible(true);
     }
 
 
